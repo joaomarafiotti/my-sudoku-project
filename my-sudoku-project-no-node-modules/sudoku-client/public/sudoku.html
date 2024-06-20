@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Sudoku Game</title>
+</head>
+<body>
+    <div class="container">
+        <div id="player-info" class="player-info">Vidas: 3 | Vitórias: 0 | Derrotas: 0 | Fase: Normal</div>
+        <div class="board nine-by-nine"> <!-- Adicionei a classe "nine-by-nine" para o tabuleiro de 9x9 -->
+            <!-- Tabuleiro aqui -->
+        </div>
+        <button id="check-solution">Validar</button>
+        <button id="change-difficulty">Mudar Dificuldade</button> <!-- Adicionei um botão para mudar a dificuldade -->
+        <p id="validation-message" style="display: none;">Preencha todos os quadrados antes de validar!</p>
+    </div>
+    <script src="app.js" type="module"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verifica se o usuário está autenticado
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+            } else {
+                fetch('/protected', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Token inválido');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Usuário autenticado:', data.user);
+                })
+                .catch(error => {
+                    console.error('Erro de autenticação:', error);
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
